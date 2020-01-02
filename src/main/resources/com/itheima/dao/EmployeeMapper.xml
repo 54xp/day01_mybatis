@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.EmployeeMapper">  <!--接口全限定类名-->
+    <resultMap id="ret" type="com.itheima.domain.Employee">
+        <id column="id" property="id"></id>
+        <result column="last_name" property="lastName"></result>
+    </resultMap>
+    <select id="findAll" resultMap="ret">
+        select * from employee
+    </select>
+
+    <resultMap id="retDept" type="com.itheima.domain.Employee">
+        <id property="id" column="id"></id>
+        <result property="lastName" column="last_name"></result>
+        <result property="email" column="email"></result>
+        <result property="gender" column="gender"></result>
+        <result property="dept.id" column="did"></result>
+        <result property="dept.departmentName" column="departmentName"></result>
+    </resultMap>
+
+    <resultMap id="retDept2" type="com.itheima.domain.Employee">
+        <id property="id" column="id"></id>
+        <result property="lastName" column="last_name"></result>
+        <result property="email" column="email"></result>
+        <result property="gender" column="gender"></result>
+        <association property="dept" javaType="com.itheima.domain.Department">
+            <id column="did" property="id"></id>
+            <result column="departmentName" property="departmentName"></result>
+        </association>
+    </resultMap>
+
+    <select id="getEmpAndDept" resultMap="retDept2">
+        select e.*,d.id as did ,d.departmentName
+        from employee e LEFT JOIN department d
+        on e.d_id = d.id
+        where e.id=#{id}
+    </select>
+
+
+    <resultMap id="retStep" type="com.itheima.domain.Employee">
+        <id property="id" column="id"></id>
+        <result property="lastName" column="last_name"></result>
+        <result property="email" column="email"></result>
+        <result property="gender" column="gender"></result>
+        <association property="dept" select="com.itheima.dao.DepartmentMapper.getDeptName"
+        column="d_id">
+        </association>
+    </resultMap>
+    <select id="getDeptStep" resultMap="retStep">
+        select * from employee where id=#{id}
+    </select>
+
+</mapper>
